@@ -1,0 +1,28 @@
+#include<LPC21XX.h>
+#include"delay.h"
+#define LED0 1<<17
+void EXT_INT_0(void) __irq  // ISR for external interrupt 0
+{
+	  EXTINT=0X01;     // To clear external interrupt 0 flag
+	  IOCLR0=LED0;
+	  delay_ms(500);
+	  IOSET0=LED0;
+	  delay_ms(500);
+	  VICVectAddr=0;
+}
+int main()
+{
+	    int cnt=0;
+	    PINSEL1=1<<0;  // corresponding pin functionality for external interrupt 0
+	    IODIR0=LED0;
+	    VICIntSelect=0; // To select if the provided interrupt is FIQ or IRQ
+	    VICVectCntl0=0x20|14; // To Select slot for the corresponding external interrupt 0 as vectored IRQ
+	    VICVectAddr0=(int)EXT_INT_0;// Assign address for Interrupt service routine
+	    EXTMODE=0X00;// To select level or edge triggering for external interrupt 0
+	    EXTPOLAR=0X00;//To select low or high level or rising or falling edge for external interrupt 0
+	    VICIntEnable=1<<14;// To enable interrupt
+	    while(1)
+			{
+				 cnt++;
+			}
+}
