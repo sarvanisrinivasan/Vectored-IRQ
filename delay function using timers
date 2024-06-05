@@ -1,0 +1,8 @@
+void delay_ms(unsigned int ms)
+ {
+	   T0PR=15000-1; //final count to be achieved to increment timer counter
+	   T0TCR=0X01;  // enable T0PR and T0TC
+	   while(T0TC<ms); //loop runs till value of timer counter reaches the desired count
+	   T0TCR=0X03;// resets T0TC
+	   T0TCR=0X00;
+ }
